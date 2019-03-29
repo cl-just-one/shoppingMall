@@ -10,7 +10,7 @@
             <span class="sortby">Sort by:</span>
             <a href="javascript:void(0)" class="default cur">Default</a>
             <a href="javascript:void(0)" class="price" @click="sortGoods">Price
-              <svg class="icon icon-arrow-short">
+              <svg class="icon icon-arrow-short" :class="{'arrow-by':sortFlag}">
                 <use xlink:href="#icon-arrow-short"></use>
               </svg>
             </a>
@@ -65,6 +65,26 @@
         </div>
       </div>
       <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
+      <modal :mdShow="mdShow" @close="closeModal">
+        <p slot="message">
+          你未登录，不能加入购物车。
+        </p>
+        <p slot="btnGroup">
+          <a class="btn btn--m" href="javascript:;" @click="mdShow=false">关闭</a>
+        </p>
+      </modal>
+      <modal :mdShow="mdShowCart">
+        <p slot="message">
+          <svg class="navbar-cart-logo">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
+          </svg>
+          <span>加入购物车成功！</span>
+        </p>
+        <p slot="btnGroup">
+          <a class="btn btn--m" href="javascript:;" @click="mdShowCart=false">继续购物</a>
+          <router-link class="btn btn--m" href="javascript:;" to="/cart">查看购物车</router-link>
+        </p>
+      </modal>
       <nav-footer></nav-footer>
     </div>
 </template>
@@ -75,6 +95,7 @@
   import NavHeader from '@/components/NavHeader.vue'
   import NavFooter from '@/components/NavFooter.vue'
   import NavBread from '@/components/NavBread.vue'
+  import Modal from '@/components/Modal'
   import axios from 'axios'
 
   export default{
@@ -90,13 +111,16 @@
             pageSize: 8,
             sort: 1,
             busy: true,
-            loading: true
+            loading: true,
+            mdShow: false,
+            mdShowCart: false
           }
       },
       components: {
         NavHeader,
         NavFooter,
-        NavBread
+        NavBread,
+        Modal
       },
       mounted() {
         this.getGoodsList()
@@ -184,11 +208,14 @@
           }).then((res) => {
             var result = res.data
             if (result.status === "0") {
-              alert('加入成功')
+              this.mdShowCart = true
             } else {
-              alert('加入失败')
+              this.mdShow = true
             }
           })
+        },
+        closeModal() {
+          this.mdShow = false
         }
       }
   }
@@ -198,5 +225,9 @@
     height: 100px;
     line-height: 100px;
     text-align: center;
+  }
+  .arrow-by {
+    transform: rotate(180deg);
+    transition: all .3s ease-out;
   }
 </style>
