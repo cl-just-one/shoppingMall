@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const User = require('./../models/users')
+require('./../util/util')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -284,6 +285,76 @@ router.post('/delAddres', (req, res, next) => {
                 status: '0',
                 msg: '',
                 result: 'success'
+            })
+        }
+    })
+})
+
+// 创建订单
+router.post('/createOrder', (req, res, next) => {
+    var userId = req.cookies.userId
+    var addressId = req.body.addressId
+    var orderTotal = req.body.orderTotal
+
+    User.findOne({
+        userId: userId
+    }, (err, doc) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.messge,
+                result: ''
+            })
+        } else {
+            var address = ''
+            var goodsList = []
+                // 获取当前用户的地址信息
+            doc.addressList.forEach((item) => {
+                    if (item.addressId == addressId) {
+                        address = item
+                    }
+                })
+                // 获取当前用户购物车的商品
+            doc.cartList.filter((item) => {
+                if (item.checked == '1') {
+                    goodsList.push(item)
+                }
+            })
+
+            var platform = '622'
+            var r1 = Math.floor(Math.random() * 10);
+            var r2 = Math.floor(Math.random() * 10);
+
+            var sysDate = new Date().Format('yyyyMMddhhmmss')
+            var createDate = new Date().Format('yyyy-MM-dd hh:mm:ss')
+            var orderId = platform + r1 + sysDate + r2
+
+            var order = {
+                orderId: orderId,
+                orderTotal: orderTotal,
+                addressInfo: address,
+                goodsList: goodsList,
+                orderStatus: '1',
+                createDate: createDate
+            }
+            doc.orderList.push(order)
+            doc.save((err1, doc1) => {
+                if (err1) {
+                    res.json({
+                        status: '1',
+                        msg: err.messge,
+                        result: ''
+                    })
+                } else {
+                    res.json({
+                        status: '0',
+                        msg: '',
+                        result: {
+                            orderId: order.orderId,
+                            orderTotal: order.orderTotal
+                        }
+                    })
+                }
             })
         }
     })

@@ -126,7 +126,7 @@
 					<div class="next-btn-wrap">
 						<router-link
 							class="btn btn--m btn--red"
-							:to="{'path':'/orderConfirm','query':{address:checkedId}}">Next</router-link>
+							:to="{'path':'/orderConfirm','query':{addressId:checkedId}}">Next</router-link>
 					</div>
 				</div>
 			</div>
@@ -182,6 +182,9 @@
 					let res = response.data
 					if (res.status == '0') {
 						this.addressList = res.result
+						if (!this.checkedId && this.addressList.length) {
+							this.checkedId = this.addressList[0].addressId
+						}
 					}
 				})
 			},

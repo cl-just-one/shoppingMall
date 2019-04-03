@@ -38,6 +38,7 @@ module.exports = {
         // 关闭语句强制分号结尾
         "semi": [0],
         "no-unreachable": "off",
-        "eqeqeq": 0
+        "eqeqeq": 0,
+        "no-extend-native": 0
     }
 }
