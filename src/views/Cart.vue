@@ -94,7 +94,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{item.salePrice*item.productNum}}</div>
+                  <div class="item-price-total">{{item.salePrice*item.productNum | currency1}}</div>
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
@@ -123,10 +123,13 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price">{{totalPrice}}</span>
+                Item total: <span class="total-price">{{totalPrice | currency}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red">Checkout</a>
+                <a
+                  class="btn btn--red"
+                  :class="{'btn--dis':checkedCount==0}"
+                  @click="checkOut">Checkout</a>
               </div>
             </div>
           </div>
@@ -151,6 +154,7 @@
   import NavBread from '@/components/NavBread.vue'
   import Modal from '@/components/Modal'
   import axios from 'axios'
+  import { currency } from '@/util/currency'
 
   export default {
     data() {
@@ -158,6 +162,12 @@
         cartList: [],
         mdCartConfirm: false,
         productId: ''
+      }
+    },
+    // 局部注册过滤器
+    filters: {
+      currency(val) {
+        return currency(val, "$")
       }
     },
     components: {
@@ -254,6 +264,13 @@
             console.log("edit cart success");
           }
         })
+      },
+      checkOut() {
+        if (this.checkedCount > 0) {
+          this.$router.push({
+            path: "/address"
+          })
+        }
       }
     }
   }

@@ -192,4 +192,101 @@ router.post('/editCart', (req, res, next) => {
     })
 })
 
+router.get('/addressList', (req, res, next) => {
+    let userId = req.cookies.userId
+    User.findOne({
+        userId: userId
+    }, (err, doc) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: '',
+                result: err.message
+            })
+        } else {
+            res.json({
+                status: '0',
+                msg: '',
+                result: doc.addressList
+            })
+        }
+    })
+})
+
+// 设置默认地址
+router.post('/setDefault', (req, res, next) => {
+    let userId = req.cookies.userId
+    let addressId = req.body.addressId
+    if (!addressId) {
+        res.json({
+            status: '1005',
+            msg: 'addressId is null',
+            result: ''
+        })
+    }
+    User.findOne({
+        userId: userId
+    }, (err, doc) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: '',
+                result: err.message
+            })
+        } else {
+            doc.addressList.forEach((item) => {
+                if (item.addressId == addressId) {
+                    item.isDefault = true
+                } else {
+                    item.isDefault = false
+                }
+            })
+            doc.save((err1, doc1) => {
+                if (err1) {
+                    res.json({
+                        status: '1',
+                        msg: '',
+                        result: err.message
+                    })
+                } else {
+                    res.json({
+                        status: '0',
+                        msg: '',
+                        result: 'success'
+                    })
+                }
+            })
+        }
+    })
+})
+
+// 删除地址列表
+router.post('/delAddres', (req, res, next) => {
+    let userId = req.cookies.userId
+    let addressId = req.body.addressId
+    User.update({
+        userId: userId
+    }, {
+        $pull: {
+            "addressList": {
+                "addressId": addressId
+            }
+        }
+    }, (err, doc) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.messge,
+                result: ''
+            })
+        } else {
+            res.json({
+                status: '0',
+                msg: '',
+                result: 'success'
+            })
+        }
+    })
+})
+
 module.exports = router;

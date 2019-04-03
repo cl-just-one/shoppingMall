@@ -164,7 +164,7 @@
     margin-left: -20px;
   }
   .navbar-brand-logo {
-    /*width: 120px;*/
+    width: 220px;
   }
   .header a, .footer a {
     color: #666;
