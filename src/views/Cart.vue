@@ -98,7 +98,7 @@
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
-                    <a href="javascript:;" class="item-edit-btn" @click="delCartBtn(item.productId)">
+                    <a href="javascript:;" class="item-edit-btn" @click="delCartBtn(item)">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
                       </svg>
@@ -161,7 +161,7 @@
       return {
         cartList: [],
         mdCartConfirm: false,
-        productId: ''
+        delItem: {}
       }
     },
     // 局部注册过滤器
@@ -216,18 +216,19 @@
       },
       cartDel() {
         axios.post('/users/cartDel', {
-          productId: this.productId
+          productId: this.delItem.productId
         }).then((response) => {
           let res = response.data
           if (res.status == '0') {
             this.mdCartConfirm = false
             this.init()
+            this.$store.commit('updateCartCount', -this.delItem.productNum)
           }
         })
       },
-      delCartBtn(productId) {
+      delCartBtn(delItem) {
         this.mdCartConfirm = true
-        this.productId = productId
+        this.delItem = delItem
       },
       toggleCheckedAll() {
         let flag = !this.checkedAllFlag
@@ -261,7 +262,13 @@
         }).then((response) => {
           let res = response.data
           if (res.status == '0') {
-            console.log("edit cart success");
+            let num = 0
+            if (flag == "add") {
+              num = 1
+            } else if (flag == "minu") {
+              num = -1
+            }
+            this.$store.commit('updateCartCount', num)
           }
         })
       },

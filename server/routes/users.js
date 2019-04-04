@@ -46,6 +46,34 @@ router.post('/login', (req, res, next) => {
     })
 })
 
+// 获取购物车总数
+router.get('/getCartCount', (req, res, next) => {
+    let userId = req.cookies.userId
+    User.findOne({
+        userId: userId
+    }, (err, doc) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: '',
+                result: err.message
+            })
+        } else {
+            let cartCount = 0
+            doc.cartList.forEach((item) => {
+                cartCount += parseInt(item.productNum)
+            })
+            res.json({
+                status: '0',
+                msg: '',
+                result: {
+                    cartCount: cartCount
+                }
+            })
+        }
+    })
+})
+
 router.post('/logout', (req, res, next) => {
     res.cookie('userId', '', {
         path: '/',
