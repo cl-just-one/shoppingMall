@@ -360,4 +360,51 @@ router.post('/createOrder', (req, res, next) => {
     })
 })
 
+router.get('/orderDetail', (req, res, next) => {
+    let userId = req.cookies.userId
+    let orderId = req.param('orderId')
+    if (!orderId) {
+        res.json({
+            status: '1',
+            msg: '此订单未创建',
+            result: ''
+        })
+    }
+    User.findOne({
+        userId: userId
+    }, (err, userInfo) => {
+        if (err) {
+            res.json({
+                status: '1',
+                msg: err.messge,
+                result: ''
+            })
+        } else {
+            var orderTotal = ''
+            let orderList = userInfo.orderList;
+            if (orderList.length > 0) {
+                orderList.forEach((item) => {
+                    if (item.orderId == orderId) {
+                        orderTotal = item.orderTotal
+                    }
+                })
+                res.json({
+                    status: '0',
+                    msg: '',
+                    result: {
+                        orderId: orderId,
+                        orderTotal: orderTotal
+                    }
+                })
+            } else {
+                res.json({
+                    status: '1',
+                    msg: '此订单不存在',
+                    result: ''
+                })
+            }
+        }
+    })
+})
+
 module.exports = router;
