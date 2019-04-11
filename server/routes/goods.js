@@ -22,7 +22,7 @@ router.get('/list', (req, res, next) => {
     let page = parseInt(req.param('page'))
     let pageSize = parseInt(req.param('pageSize'))
     let sort = parseInt(req.param('sort'))
-    let skip = (page - 1) * pageSize
+    let skip = (page - 1) * pageSize // 从哪个位置开始查询
     let params = {}
     let priceLevel = req.param('priceLevel')
     let priceGt = ''
@@ -77,7 +77,7 @@ router.get('/list', (req, res, next) => {
 
 // 加入到购物车
 router.post('/addCart', (req, res, next) => {
-    let userId = '100000077'
+    let userId = req.cookies.userId
     let productId = req.body.productId
     let User = require('./../models/users')
 

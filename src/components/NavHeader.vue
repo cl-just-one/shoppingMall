@@ -101,12 +101,12 @@
     },
     computed: {
       ...mapState(['nickName', 'cartCount'])
-      /*nickName() {
+      /* nickName() {
         return this.$store.state.nickName
       },
       cartCount() {
         return this.$store.state.cartCount
-      }*/
+      } */
     },
     mounted() {
       this.checkLogin()
@@ -148,6 +148,7 @@
             // this.nickName = ''
             this.$store.commit("updateUserInfo", "")
             this.$store.commit('updateCartCount', 0)
+            this.$router.push('/')
           }
         })
       },

@@ -186,16 +186,17 @@
       checkedCount() {
         let i = 0
         this.cartList.forEach((item) => {
-          if (item.checked) {
+          if (item.checked == '1') {
             i++
           }
         })
-        return i++
+        return i
       },
       totalPrice() {
         let money = 0
+        console.table(this.cartList)
         this.cartList.forEach((item) => {
-          if (item.checked) {
+          if (item.checked == "1") {
             money += parseInt(item.salePrice) * parseInt(item.productNum)
           }
         })
