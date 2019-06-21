@@ -131,7 +131,7 @@
           userName: this.userName,
           userPwd: this.userPwd
         }).then((res) => {
-          if (res.status == 200) {
+          if (res.data.status == 0) {
             this.errorTip = false
             this.loginModalFlag = false
             // this.nickName = res.data.result.userName
